@@ -1,0 +1,13 @@
+# Secrets - MT5 credentials must never be committed
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Local noise
+logs/
+*.log

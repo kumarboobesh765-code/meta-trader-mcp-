@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "metatrader": {
+      "command": "python",
+      "args": ["scripts/mt5_mcp_guarded.py", "--transport", "stdio"]
+    }
+  }
+}

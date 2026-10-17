@@ -1,0 +1,12 @@
+; FTTestEA preset - meanrev twin, trailing SL (magic 940002)
+; Signal timeframe: M15. Load via EA Inputs -> Load.
+InpStrategy=1
+InpTimeframe=15
+InpLots=0.01000000
+InpMagic=940002
+InpUseTrailing=true
+InpTrailActAtr=1.00000000
+InpTrailDistAtr=1.20000000
+InpTrailStepAtr=0.30000000
+InpAllowReal=false
+InpDeviationPts=50

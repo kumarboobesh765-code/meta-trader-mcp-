@@ -1,0 +1,12 @@
+; FTTestEA preset - straddle twin, trailing SL (magic 940004)
+; Signal timeframe: H1. Load via EA Inputs -> Load.
+InpStrategy=3
+InpTimeframe=16385
+InpLots=0.01000000
+InpMagic=940004
+InpUseTrailing=true
+InpTrailActAtr=1.00000000
+InpTrailDistAtr=1.20000000
+InpTrailStepAtr=0.30000000
+InpAllowReal=false
+InpDeviationPts=50

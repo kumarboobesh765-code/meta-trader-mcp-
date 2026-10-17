@@ -1,0 +1,12 @@
+; FTTestEA preset - macross twin, fixed SL (magic 930003)
+; Signal timeframe: M30. Load via EA Inputs -> Load.
+InpStrategy=2
+InpTimeframe=30
+InpLots=0.01000000
+InpMagic=930003
+InpUseTrailing=false
+InpTrailActAtr=1.00000000
+InpTrailDistAtr=1.20000000
+InpTrailStepAtr=0.30000000
+InpAllowReal=false
+InpDeviationPts=50

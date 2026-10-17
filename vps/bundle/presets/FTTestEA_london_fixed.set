@@ -1,0 +1,12 @@
+; FTTestEA preset - london twin, fixed SL (magic 930006)
+; Signal timeframe: M15. Load via EA Inputs -> Load.
+InpStrategy=5
+InpTimeframe=15
+InpLots=0.01000000
+InpMagic=930006
+InpUseTrailing=false
+InpTrailActAtr=1.00000000
+InpTrailDistAtr=1.20000000
+InpTrailStepAtr=0.30000000
+InpAllowReal=false
+InpDeviationPts=50

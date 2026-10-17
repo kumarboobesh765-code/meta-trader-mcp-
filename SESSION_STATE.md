@@ -2,6 +2,38 @@
 
 _Last updated: 2026-10-17 (Saturday, market closed) by the working agent._
 
+<!-- EVENING_SNAPSHOT:BEGIN (auto-updated daily 20:00 by scripts/evening_snapshot.py) -->
+
+### Evening snapshot — auto-generated 2026-10-17 11:59
+
+**Source:** live pull from the VPS by `scripts/evening_snapshot.py` (perf_summary.py + today's EA log).
+
+```text
+ACCOUNT 26122844 balance=95950.57 equity=95950.57
+GridRecovery (930021)
+  open trades=0  floating=+0.00
+  closed trades=1420  net=-1744.73  win rate=64%
+Bare BUY grid (930022)
+  open trades=0  floating=+0.00
+  closed trades=530  net=-1475.32  win rate=72%
+GridBestRR v1.01 (930023)
+  open trades=0  floating=+0.00
+  closed trades=269  net=-1026.93  win rate=71%
+SlipstreamAlt (930031)
+  open trades=0  floating=+0.00
+  closed trades=30  net=+141.18  win rate=37%
+```
+
+```text
+5184 10/16/2026 6:52:25 PM
+
+
+(no EA log today - weekend or terminal down)
+```
+
+<!-- EVENING_SNAPSHOT:END -->
+
+
 ## What happened most recently (read this first)
 - **Friday 2026-10-16, 21:32 server time: the $5,000 equity stop fired on ALL FOUR EAs**
   (equity fell to $96,147 vs balance $101,147). Everything was closed at market and each EA
@@ -73,3 +105,7 @@ strong directional gold market.**
   Copy them securely from a machine that has them.
 - `CHATS_HISTORY.md` — condensed memory of all our working sessions, for context on
   decisions already made and why.
+- Every evening at 20:00 the scheduled task `MetaTraderRepoAutoPush` runs
+  `scripts/auto_push.bat`: it first pulls this account/EAs snapshot from the VPS
+  (`scripts/evening_snapshot.py`, read-only), then commits and pushes everything here —
+  so this repo on GitHub always carries the latest numbers and state.

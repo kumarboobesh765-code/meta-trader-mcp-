@@ -8,6 +8,7 @@ NAMES = {
     930021: "GridRecovery (930021)",
     930022: "Bare BUY grid (930022)",
     930023: "GridBestRR v1.01 (930023)",
+    930031: "SlipstreamAlt (930031)",
 }
 SINCE = datetime(2026, 10, 15, 4, 34, tzinfo=timezone.utc)  # 10:34 VPS local (UTC+5:30 -> 05:04 UTC; see note)
 

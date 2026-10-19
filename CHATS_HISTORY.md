@@ -84,6 +84,20 @@ continue with full context. Newest at the end. Keep me updated each working sess
   91 trades since Fri close, 57W/34L, avg win +$37.81, avg loss −$52.40, largest −$252.80,
   net +$373.67 (62.6% win rate vs 58.1% break-even requirement).
 
+### 2026-10-19 — user asked "SlipstreamAlt TP not working, there is no TP on the position"
+- Verified: the missing T/P field is BY DESIGN — SlipstreamAlt attaches no server-side T/P;
+  the basket TP = breakeven + $1.80 is computed live and closed manually as a batch
+  (tagged `[tp <price>]`). Today's log shows many working escapes, e.g. `[tp 4185.07]`,
+  `[tp 4179.09]`, `[tp 4170.38]`, with correct BUY→SELL alternation after each close.
+- All four EAs confirmed running today: gridrecovery 571 log lines, gridbestrr 249,
+  slipstream-clone 54, slipstream-alt dozens of cycles/escapes.
+- Found: a 58-second burst of `open failed err=4756` (150 attempts) on 930031 at the
+  03:30 pause-lift moment Monday — orders fired before the broker session had quotes.
+  Rep龟 handled by the retry flag; first order landed right after. Harmless but noisy;
+  could be throttled in a future version.
+- Refreshed perf_summary at ~16:40 IST: balance $96,627.58, equity $96,634.60;
+  930031 still +$373.67 (91 closed), others unchanged since the morning pull.
+
 ### Standing user preferences (still apply)
 - "change whatever u want" granted, but big live-money changes (lot sizing, caps, stops)
   get surfaced before editing.

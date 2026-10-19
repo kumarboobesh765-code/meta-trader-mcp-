@@ -1,6 +1,6 @@
 # SESSION_STATE.md — live handoff (update me at the end of every working session)
 
-_Last updated: 2026-10-17 (Saturday, market closed) by the working agent._
+_Last updated: 2026-10-19 (Monday) by the working agent._
 
 <!-- EVENING_SNAPSHOT:BEGIN (auto-updated daily 20:00 by scripts/evening_snapshot.py) -->
 
@@ -37,6 +37,8 @@ SlipstreamAlt (930031)
 
 
 ## What happened most recently (read this first)
+- **Monday 2026-10-19 03:30 server time: all four EAs auto-lifted from the equity-stop pause** as designed (verified in the live log). All four are trading again and holding small open baskets.
+- **Monday 2026-10-19 ~16:05 IST overview pull** (live from VPS, read-only): 930031 is the only strategy in true net positive lifetime (+$373.67 in ~3 days, avg win $37.81 vs avg loss −$52.40 — needs ≥58.1% wins, running 62.6%), while 930021/930022/930023 all remain structurally negative (break-even win rates far above their realized ones). No equity-stop re-trips since Friday.
 - **Friday 2026-10-16, 21:32 server time: the $5,000 equity stop fired on ALL FOUR EAs**
   (equity fell to $96,147 vs balance $101,147). Everything was closed at market and each EA
   paused until the next server day. This is the safety rail working as designed, but it
@@ -49,16 +51,16 @@ SlipstreamAlt (930031)
   at next server-day tick, Monday).
 
 ## Account
-- **Demo account 26122844**, balance **$95,950.57**, equity **$95,950.57** (flat).
+- **Demo account 26122844**, balance **$96,571.15**, equity **$96,435.21** (Mon 2026-10-19 ~16:05 IST, floating −$135.94 across 16 open trades).
 - Symbol: XAUUSD (gold), all EAs on this one symbol. Broker demo server (Vantage-style).
 
 ## Live EAs (charts in profile FTTest, all XAUUSD H1)
 | Chart | EA | Magic | Version / key settings | Status |
 |---|---|---|---|---|
-| chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | paused (equity stop, auto-lifts) |
-| chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | paused (equity stop) |
-| chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | paused (equity stop) |
-| chart04 | **SlipstreamAltEA** | **930031** | v1.00: **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL | paused (equity stop) |
+| chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | LIVE, 3 open, floating −$0.60 |
+| chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | LIVE, 5 open, floating −$42.37 |
+| chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | LIVE, 4 open, floating −$72.29 |
+| chart04 | **SlipstreamAltEA** | **930031** | v1.00: **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL | LIVE, 4 open, floating −$20.68 |
 
 SlipstreamAltEA magic 930031 is NOT yet in `vps/perf_summary.py` — add it before Monday so
 its results land in the daily reports.
@@ -66,14 +68,15 @@ its results land in the daily reports.
 ## Cumulative closed-trade results (as of Fri close, ~the numbers to judge)
 | Magic | EA | Closed | Net | Win rate | Verdict |
 |---|---|---|---|---|---|
-| 930021 | GridRecovery | 1,420 | **−$1,744** | 64% | needs ≥68%, still losing after v2.02 tune |
-| 930022 | SlipstreamClone (Bare BUY) | 530 | **−$1,475** | 72% | was +$2,395 at 18:44 Fri, lost ~$3,900 in the Fri-evening trend — its no-SL tail fired |
-| 930023 | GridBestRR | 269 | **−$1,027** | 71% | still below break-even PF after v1.01 verdict window |
-| 930031 | SlipstreamAlt | new | (first cycles mostly positive before stop) | — | needs ~100 closed cycles before judging |
+| 930021 | GridRecovery | 1,610 | **−$1,642** | 65% | needs ~68% wins to break even (avg win $9.51 vs avg loss −$20.49), persistent loser, biggest cumulative loss on the account |
+| 930022 | SlipstreamClone (Bare BUY) | 617 | **−$1,224** | 73% | avg win $9.09 vs avg loss −$32.32, needs ~78% wins, had 73%; single −$1,016 trade proves the no-SL tail is real |
+| 930023 | GridBestRR | 295 | **−$973** | 72% | avg win $5.06 vs avg loss −$24.30, needs ~83% wins, had 72%; structurally unfixable at current params |
+| 930031 | SlipstreamAlt | 91 | **+$374** | 63% | avg win $37.81 vs avg loss −$52.40, needs ~58.1% wins, running 62.6%; ONLY strategy in true net positive lifetime, but tail risk (no SL) is identical to source bot |
 
 **The one-sided takeaway repeated itself a third time: these baskets bleed in a trend.
-Everything on this account is a grid/martingale variant; none has proven it survives a
-strong directional gold market.**
+Everything on this account is a grid/martingale variant. As of Mon 2026-10-19 only 930031
+(SlipstreamAlt, the alternation bot) is in true net positive lifetime; the other three
+are structurally negative and the recommendation to retire 930021 stands.**
 
 ## VPS (all run over SSH; key `~/.ssh/id_ed25519_vps`, creds read from `.env.vps`)
 - Host/user: read `.env.vps` (gitignored on purpose).
@@ -87,17 +90,13 @@ strong directional gold market.**
 - EA source of truth on VPS: `…\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Experts\FTTest\`.
 
 ## What to check next (in order)
-1. **Monday at market open**: confirm all four EAs auto-lifted from the equity-stop pause
-   (`grep "pause lifted" <day>.log`) and that they trade on the intended settings above.
-2. **Decide the fate of 930021** (biggest cumulative loss, −$1.7k). Recommendation: pause or
-   retire it; v2.02's tighter cap did not turn it positive.
-3. **Judge 930022's tail**: it gave back ~$3,900 in one evening with zero SL. Either accept
-   that profile or add a per-basket dollar stop around −$150.
-4. **Watch 930031**: verify its FIRST alternation (BUY cycle closes at basket TP or eqstop →
-   next cycle must open SELL). Check at least 2 full cycles before trusting the parity logic.
-5. **Do not judge any of this by win rate alone.** Use avg win vs avg loss and the
-   break-even win rate (`python C:\FTTest\win_loss_breakdown.py`).
-6. Weekly: run `scripts/_day_perf.py` / `scripts/overview_report.py` for the digest.
+1. **Keep watching 930031** toward ~150 closed cycles before a final call (only ~91 so far,
+   but it's the only net-positive strategy). Confirm BUY→SELL parity worked correctly on all
+   cycles surviving Friday's stop event - check early cycles today and verify no desync.
+2. **Retire 930021** (biggest cumulative loss, −$1.7k). v2.02's tighter cap didn't turn it positive.
+3. **Add a per-basket dollar stop around −$150 on 930022** or accept the -1k tail risk profile as-is.
+4. **Fix `win_loss_breakdown.py` on the VPS** to include magic 930031 in its NAMES table (currently only covers 930021/930022/930023).
+5. Keep watching for another Fri-evening-style gold trend re-tripping the $5,000 equity stop; it's the only guardrail these grids have.
 
 ## Repository pointers for the next agent
 - `RUNBOOK.md`, `vps/README.md` — deployment, scheduled tasks, SSH setup.

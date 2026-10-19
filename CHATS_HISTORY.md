@@ -71,6 +71,19 @@ continue with full context. Newest at the end. Keep me updated each working sess
 - Client-side deltas of the Friday evening: 930022 went from +$2,395 (18:44) to
   −$1,475 (close) — gave back ~$3,900 in one trend leg with no SL.
 
+### 2026-10-19 Monday — performance overview after weekend equity-stop auto-lift
+- All four EAs lifted from the Fri equity-stop pause at 03:30 server time Monday, as
+  designed. Live pull (read-only) at ~16:05 IST: 930031 back to +$373.67 in 91 closed
+  trades, still the ONLY net-positive strategy on the account. 930021/930022/930023
+  still structurally negative after the weekend (avg win vs avg loss shapes unchanged).
+- Fixed SESSION_STATE.md stale "flat, paused" row for the account (now reflects Mon's
+  live balance/equity/open-basket state) and refreshed the verdict table with real
+  win/loss shapes instead of vague "needs ~XX%" phrasing.
+- Found a small gap: `win_loss_breakdown.py` on the VPS still only knows the three
+  original magics — 930031 is missing from its NAMES dict. Computed its shape inline:
+  91 trades since Fri close, 57W/34L, avg win +$37.81, avg loss −$52.40, largest −$252.80,
+  net +$373.67 (62.6% win rate vs 58.1% break-even requirement).
+
 ### Standing user preferences (still apply)
 - "change whatever u want" granted, but big live-money changes (lot sizing, caps, stops)
   get surfaced before editing.

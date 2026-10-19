@@ -98,6 +98,24 @@ continue with full context. Newest at the end. Keep me updated each working sess
 - Refreshed perf_summary at ~16:40 IST: balance $96,627.58, equity $96,634.60;
   930031 still +$373.67 (91 closed), others unchanged since the morning pull.
 
+### 2026-10-19 late — SlipstreamAltEA v1.01: basket TP shown in the chart Comment
+- User asked to see the escape level on the chart. Implementation: RunBasket() now records
+  `g_lastBasketTP / g_lastBasketN / g_lastBasketDir` every tick; the Comment shows e.g.
+  `slipstream-alt 930031  L/S = 1/2  SELL-basket TP=4166.70`. Batch-close escape behavior
+  itself is UNCHANGED — display only. Version string bumped to v1.01 for positive log ID.
+- Deployed: scp to C:\FTTest, copy into the Terminal Experts dir, compile via
+  compile_slipstreamalt.bat → **Result: 0 errors, 0 warnings** (both compiles).
+- Terminal restarted (taskkill + mt_relaunch.ps1, PID 5184 → 2328). Log confirms all four
+  EAs reloaded at 16:33:31 with correct versions (930031 v1.01 first line verified).
+- Reasoning note: basket-TP display only appears while a basket is live; flat state shows
+  `flat, waiting cycle`. Restart did NOT touch server-side positions (2 SELLs survived,
+  matched tickets before/after via Python probe).
+- Account after restart: balance $96,661.67, equity $96,660.44. 930031 at +$390.36 over
+  96 closed trades, still the only net-positive EA.
+- Limitation flagged in handoff: Comment() text does not reach the MQL5 log, so CD-level
+  proof of what's RENDERED on the chart needs one RDP eyeball — the log only proves v1.01
+  is loaded and init succeeded.
+
 ### Standing user preferences (still apply)
 - "change whatever u want" granted, but big live-money changes (lot sizing, caps, stops)
   get surfaced before editing.

@@ -27,7 +27,7 @@
 //|   * DEMO-ONLY unless InpAllowReal=true. Magic required.           |
 //+------------------------------------------------------------------+
 #property copyright "meta-trader-mcp forward test"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -63,6 +63,9 @@ datetime g_newsRefresh = 0;
 bool     g_newsHeld = false;
 int      g_prevN = 0;          // positions last tick (0 -> flat transition triggers rescan)
 bool     g_historyDirty = true;
+double   g_lastBasketTP = 0.0; // live basket escape level for the chart comment
+int      g_lastBasketN = 0;    // size of that basket (0 = none live)
+long     g_lastBasketDir = -1; // side of that basket
 
 //+------------------------------------------------------------------+
 int OnInit()
@@ -93,7 +96,7 @@ int OnInit()
    trade.SetDeviationInPoints(InpDeviationPts);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetExpertMagicNumber(InpMagic);
-   Print(g_tag, " ", InpMagic, " v1.00 started on ", _Symbol,
+   Print(g_tag, " ", InpMagic, " v1.01 started on ", _Symbol,
          " base=", InpLots, " mult=", InpLotMult,
          " step=", g_step, " tp=", g_tpd,
          " layers<=", (InpMaxLayers == 0 ? "unl" : IntegerToString(InpMaxLayers)),
@@ -316,6 +319,10 @@ void RunBasket(long dir, double priceEsc, bool allowOpen)
    if(n == 0)
       return;
 
+   g_lastBasketTP = be + ((dir == POSITION_TYPE_BUY) ? g_tpd : -g_tpd);
+   g_lastBasketN = n;
+   g_lastBasketDir = dir;
+
    // escape: whole basket at breakeven + $1.80 (batch close, no server TP)
    double bucket = be + ((dir == POSITION_TYPE_BUY) ? g_tpd : -g_tpd);
    bool hit = (dir == POSITION_TYPE_BUY) ? (priceEsc >= bucket) : (priceEsc <= bucket);
@@ -384,6 +391,9 @@ void OnTick()
 
    if(total == 0)
      {
+      g_lastBasketTP = 0.0;
+      g_lastBasketN = 0;
+
       // flat: new cycle on the OPPOSITE side of the last entry deal
       if(g_prevN > 0 || g_historyDirty)
         {
@@ -415,8 +425,16 @@ void OnTick()
    else
       RunBasket(POSITION_TYPE_SELL, ask, true);
 
+   // live basket escape level: show only the basket that is being managed
+   string tpInfo = "";
+   if(g_lastBasketDir == POSITION_TYPE_BUY && g_lastBasketN > 0)
+      tpInfo = "  BUY-basket TP=" + DoubleToString(g_lastBasketTP, g_dig);
+   else if(g_lastBasketDir == POSITION_TYPE_SELL && g_lastBasketN > 0)
+      tpInfo = "  SELL-basket TP=" + DoubleToString(g_lastBasketTP, g_dig);
+
    Comment(g_tag, " ", InpMagic,
            "  L/S = ", nb, "/", ns,
+           tpInfo,
            (g_newsHeld ? "  [news pause]" : ""));
   }
 //+------------------------------------------------------------------+

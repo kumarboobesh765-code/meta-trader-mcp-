@@ -51,16 +51,16 @@ SlipstreamAlt (930031)
   at next server-day tick, Monday).
 
 ## Account
-- **Demo account 26122844**, balance **$96,571.15**, equity **$96,435.21** (Mon 2026-10-19 ~16:05 IST, floating −$135.94 across 16 open trades).
+- **Demo account 26122844**, balance **$96,627.58**, equity **$96,634.60** (Mon 2026-10-19 ~16:40 IST).
 - Symbol: XAUUSD (gold), all EAs on this one symbol. Broker demo server (Vantage-style).
 
 ## Live EAs (charts in profile FTTest, all XAUUSD H1)
 | Chart | EA | Magic | Version / key settings | Status |
 |---|---|---|---|---|
-| chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | LIVE, 3 open, floating −$0.60 |
-| chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | LIVE, 5 open, floating −$42.37 |
-| chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | LIVE, 4 open, floating −$72.29 |
-| chart04 | **SlipstreamAltEA** | **930031** | v1.00: **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL | LIVE, 4 open, floating −$20.68 |
+| chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | LIVE, trading today (571 log lines) |
+| chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | LIVE, trading today (54 log lines) |
+| chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | LIVE, basket 4 layers deep (0.08 lots) at ~16:10 |
+| chart04 | **SlipstreamAltEA** | **930031** | v1.00: **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL | LIVE, alternation verified working today; no server T/P is BY DESIGN (batch close at BE+$1.80) |
 
 SlipstreamAltEA magic 930031 is NOT yet in `vps/perf_summary.py` — add it before Monday so
 its results land in the daily reports.
@@ -90,13 +90,16 @@ are structurally negative and the recommendation to retire 930021 stands.**
 - EA source of truth on VPS: `…\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Experts\FTTest\`.
 
 ## What to check next (in order)
-1. **Keep watching 930031** toward ~150 closed cycles before a final call (only ~91 so far,
-   but it's the only net-positive strategy). Confirm BUY→SELL parity worked correctly on all
-   cycles surviving Friday's stop event - check early cycles today and verify no desync.
-2. **Retire 930021** (biggest cumulative loss, −$1.7k). v2.02's tighter cap didn't turn it positive.
-3. **Add a per-basket dollar stop around −$150 on 930022** or accept the -1k tail risk profile as-is.
-4. **Fix `win_loss_breakdown.py` on the VPS** to include magic 930031 in its NAMES table (currently only covers 930021/930022/930023).
-5. Keep watching for another Fri-evening-style gold trend re-tripping the $5,000 equity stop; it's the only guardrail these grids have.
+1. **Keep watching 930031** toward ~150 closed cycles before a final call (still at 91 closed).
+   Alternation was verified live today (BUY→SELL→BUY sequence followed each [tp] escape).
+2. **Watch 930023**: its basket was 4 layers deep (0.08 lots) at ~16:10 today; layer 5 would
+   need price to fall another $5 and put real size on. No server SL — the equity stop is the only rail.
+3. **Retire 930021** (biggest cumulative loss, −$1.7k). v2.02's tighter cap didn't turn it positive.
+4. **Add a per-basket dollar stop around −$150 on 930022** or accept the -1k tail risk profile as-is.
+5. **Fix `win_loss_breakdown.py` on the VPS** to include magic 930031 in its NAMES table (currently only covers 930021/930022/930023).
+6. Keep watching for another Fri-evening-style gold trend re-tripping the $5,000 equity stop; it's the only guardrail these grids have.
+7. Optional polish: throttle the post-pause order burst on 930031 (150x err=4756 in 58s at the
+   03:30 Monday lift; self-healed but noisy in the log).
 
 ## Repository pointers for the next agent
 - `RUNBOOK.md`, `vps/README.md` — deployment, scheduled tasks, SSH setup.

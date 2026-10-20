@@ -1,6 +1,6 @@
 # SESSION_STATE.md — live handoff (update me at the end of every working session)
 
-_Last updated: 2026-10-19 (Monday) by the working agent._
+_Last updated: 2026-10-20 (Tuesday) by the working agent._
 
 <!-- EVENING_SNAPSHOT:BEGIN (auto-updated daily 20:00 by scripts/evening_snapshot.py) -->
 
@@ -41,8 +41,10 @@ EQ	0	03:30:01.080	GridRecoveryEA (XAUUSD,H1)	gridrecovery equity-stop pause lift
 
 
 ## What happened most recently (read this first)
+- **Tue 2026-10-20 ~12:40 server time: v1.01 SlipstreamAltEA (930031) verified LIVE and healthy via MT5 Python probe** (C:\FTTest\probe930031.py on the VPS): balance $97,805.34 / equity $97,778.30, 1 open (0.01 BUY, −$0.01), today 145 closes net **+$485.84 at 74% win rate** — its best single day so far. Today's log shows correct momentum: `[tp 4128.02]` escape at 12:02, new BUY cycle 12:02:19, escape `[tp 4129.64]`, new SELL cycle 12:03:02 (strict alternation working).
+- **Tue 2026-10-20: console-session screenshot pipeline FIXED** (was capturing pure white because the Administrator session had auto-disconnected): `tscon 1 /dest:console` re-attaches it, then scheduled-task captures work. Working scripts shipped to VPS + repo: `vps/capture_only.ps1` (screenshot only, task MTCapH), `vps/click_chart.ps1` (read C:\FTTest\click.txt "x y [x2 y2]", task MTClickH), `vps/menu_probe.ps1 -which N` (Window menu + entry N), `vps/tile_probe.ps1` (Window > Tile Vertically — leaves all 4 charts visible at once; run once to keep it sticky). All launched hidden via `wscript.exe C:\FTTest\hide.vbs <script>` (direct schtask PowerShell leaves a console window on top of MT5).
+- **Chart-04 Comment visual proof NOT obtained this session** (user said "leave the screenshot"): Window-menu entries keep activating the same underlying view (chart01's maximized MDI window covers the rest; entry clicks all rendered gridrecovery's Comment). Tile Vertically DID tile all four charts (see screenshots/vps_chart_capture_37.png), but each tile is ~250px wide and the Comment text is clipped — EyeLink readable. The EA itself is proven running by log + Python probe above; only the ON-SCREEN Comment rendering still needs one RDP eyeball (or zoom-in after next tile).
 - **Monday 2026-10-19 03:30 server time: all four EAs auto-lifted from the equity-stop pause** as designed (verified in the live log). All four are trading again and holding small open baskets.
-- **Monday 2026-10-19 ~16:05 IST overview pull** (live from VPS, read-only): 930031 is the only strategy in true net positive lifetime (+$373.67 in ~3 days, avg win $37.81 vs avg loss −$52.40 — needs ≥58.1% wins, running 62.6%), while 930021/930022/930023 all remain structurally negative (break-even win rates far above their realized ones). No equity-stop re-trips since Friday.
 - **Friday 2026-10-16, 21:32 server time: the $5,000 equity stop fired on ALL FOUR EAs**
   (equity fell to $96,147 vs balance $101,147). Everything was closed at market and each EA
   paused until the next server day. This is the safety rail working as designed, but it
@@ -55,7 +57,7 @@ EQ	0	03:30:01.080	GridRecoveryEA (XAUUSD,H1)	gridrecovery equity-stop pause lift
   at next server-day tick, Monday).
 
 ## Account
-- **Demo account 26122844**, balance **$96,661.67**, equity **$96,660.44** (Mon 2026-10-19 ~16:35 IST, after the v1.01 SlipstreamAlt restart).
+- **Demo account 26122844**, balance **$97,805.34**, equity **$97,778.30** (Tue 2026-10-20 ~12:40 server time, live probe).
 - Symbol: XAUUSD (gold), all EAs on this one symbol. Broker demo server (Vantage-style).
 
 ## Live EAs (charts in profile FTTest, all XAUUSD H1)
@@ -64,7 +66,7 @@ EQ	0	03:30:01.080	GridRecoveryEA (XAUUSD,H1)	gridrecovery equity-stop pause lift
 | chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | LIVE, trading today (571 log lines) |
 | chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | LIVE, trading today (54 log lines) |
 | chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | LIVE, basket 4 layers deep (0.08 lots) at ~16:10 |
-| chart04 | **SlipstreamAltEA** | **930031** | **v1.01** (Mon 16:33): **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL. v1.01 adds live basket-TP display in the chart Comment (no server T/P — batch close at BE+$1.80, unchanged) | LIVE, 2 open, +$390.36 closed / 96 trades |
+| chart04 | **SlipstreamAltEA** | **930031** | **v1.01** (`SlipstreamAltEA.ex5` rebuilt 10/19 16:32, terminal PID 2328 loaded it): **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL. v1.01 adds live basket-TP display in the chart Comment (no server T/P — batch close at BE+$1.80, unchanged) | LIVE — Tue 10/20: 1 open, today 145 closed **+$485.84 @ 74% WR** (best day yet) |
 
 SlipstreamAltEA magic 930031 is NOT yet in `vps/perf_summary.py` — add it before Monday so
 its results land in the daily reports.
@@ -94,17 +96,14 @@ are structurally negative and the recommendation to retire 930021 stands.**
 - EA source of truth on VPS: `…\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Experts\FTTest\`.
 
 ## What to check next (in order)
-1. **Confirm the new chart Comment on chart04**: ideally RDP once and eyeball the top-left
-   `slipstream-alt 930031 L/S = x/y  SELL-basket TP=<price>` line — the Comment text does not
-   reach the MQL5 log, so log evidence only proves v1.01 loaded, not the text rendering.
-2. **Watch 930023**: escaped its 4-layer basket at 16:30 for a gain, then reopened a cycle at
-   16:33. Watch it rebuild.
+1. **One RDP eyeball on chart04** remains the only unverified v1.01 item: after Tile Vertically (task MTTile) zoom in on the slipstream-alt tile and read the top-left `slipstream-alt 930031  L/S = x/y  BUY/SELL-basket TP=<price>` Comment. Log + Python probe prove the EA trades; only the Comment() rendering is unconfirmed.
+2. **Watch 930023**: escaped its 4-layer basket at 16:30 Mon for a gain, then reopened. Watch it rebuild.
 3. **Retire 930021** (biggest cumulative loss, −$1.7k). v2.02's tighter cap didn't turn it positive.
 4. **Add a per-basket dollar stop around −$150 on 930022** or accept the -1k tail risk profile as-is.
 5. **Fix `win_loss_breakdown.py` on the VPS** to include magic 930031 in its NAMES table (currently only covers 930021/930022/930023).
 6. Keep watching for another Fri-evening-style gold trend re-tripping the $5,000 equity stop; it's the only guardrail these grids have.
-7. Optional polish: throttle the post-pause order burst on 930031 (150x err=4756 in 58s at the
-   03:30 Monday lift; self-healed but noisy in the log).
+7. Optional polish: throttle the post-pause order burst on 930031 (150x err=4756 in 58s at the 03:30 Monday lift; self-healed but noisy in the log).
+8. If screen capture ever comes back pure white again: run `tscon 1 /dest:console` over SSH — the Administrator session auto-disconnected again.
 
 ## Repository pointers for the next agent
 - `RUNBOOK.md`, `vps/README.md` — deployment, scheduled tasks, SSH setup.

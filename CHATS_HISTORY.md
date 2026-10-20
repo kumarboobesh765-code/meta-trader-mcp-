@@ -132,3 +132,32 @@ continue with full context. Newest at the end. Keep me updated each working sess
   (trade-side) and `…\Terminal\…\Logs\<yyyymmdd>.log` (terminal-side).
 - daily watch CSV/logs: `C:\FTTest\logs\` (gitignored locally but snapshot dirs in repo
   if ever needed).
+
+### 2026-10-20 Tue — chart-04 Comment screenshot attempt: pipeline fixed, visual proof parked (user's call)
+- User asked for a SCREENSHOT of the chart-04 Comment line (basket TP) plus confirmation that the
+  updated EA (v1.01) is running in MT5.
+- Found the root cause of earlier white/blank captures: the Administrator console session was
+  DISCONNECTED (auto-logoff state). Fixed live with `tscon 1 /dest:console` over SSH → session
+  Active on console. After that CaptureFromScreen works from scheduled-task PowerShell.
+- Built and shipped a proper hidden task toolchain (all under C:\FTTest on the VPS, mirrored in
+  repo vps/): capture_only.ps1 + click_chart.ps1 (click.txt "x y [x2 y2]") + menu_probe.ps1
+  (-which N clicks Window menu entry N) + tile_probe.ps1 (Window > Tile Vertically) + hide.vbs
+  wscript wrapper (scheduled-task powershell pops a visible console onto MT5 otherwise; wscript
+  Run(...,0) hides it). Tasks: MTCapH, MTClickH, MTMenuProbe1-4, MTTile.
+- Probe results: Window menu entries 1/2/4 all rendered the SAME view — chart01 GridRecovery's
+  maximized MDI window sits on top, menu numbering ≠ tab numbering. Fixed with Tile Vertically
+  (capture 37): all four XAUUSD H1 tiles visible side by side, but ~250px tiles clip the Comment
+  text — unreadable at that size, needs zoom or a maximized single-tile pass, which the user
+  chose to skip: "leave the screenshot and finish all others".
+- EA verification DID complete (this was the second half of the same ask):
+  - `SlipstreamAltEA.ex5` rebuilt 10/19 16:32:27, terminal PID 2328 (started 10/19 16:33) — v1.01
+    is the loaded build.
+  - Same-day MQL5 log shows v1.01 behavior: 11:55 SELL cycle layer 2, 12:02 `[tp 4128.02]` escape,
+    12:02:19 new BUY cycle, 12:03 `[tp 4129.64]` escape, 12:03:02 new SELL cycle — alternation
+    and escape-tagging both working.
+  - New permanent probe `C:\FTTest\probe930031.py` (account balance/equity, open positions,
+    today's closed net + win rate for magic 930031): Tue 12:40 → balance $97,805.34, equity
+    $97,778.30, 1 open BUY 0.01 (−$0.01), today 145 closed +$485.84 @ 74% — record day for
+    this EA since Fri 18:52 launch (+$486 lifetime-ish delta against Mon's +$374 snapshot).
+- NOT verified: the Comment() text ON SCREEN (needs one RDP eyeball after tiling/zooming).
+  Everything else about v1.01 is verified live. SESSION_STATE.md updated accordingly.

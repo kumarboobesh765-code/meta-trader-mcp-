@@ -27,7 +27,7 @@
 //|   * DEMO-ONLY unless InpAllowReal=true. Magic required.           |
 //+------------------------------------------------------------------+
 #property copyright "meta-trader-mcp forward test"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -66,6 +66,46 @@ bool     g_historyDirty = true;
 double   g_lastBasketTP = 0.0; // live basket escape level for the chart comment
 int      g_lastBasketN = 0;    // size of that basket (0 = none live)
 long     g_lastBasketDir = -1; // side of that basket
+string   g_tpLineName = "";    // chart TP line object (created while a basket is live)
+
+//+------------------------------------------------------------------+
+//| Draw/move the basket-TP line so the escape level is visible on    |
+//| the chart itself (v1.02: the Comment text was too easy to miss).  |
+//| Green line = BUY basket escape, red = SELL basket escape.         |
+//| Deleted when flat. Pure display, no trading behavior change.      |
+//+------------------------------------------------------------------+
+void DrawTpLine(long dir, double level, int n)
+  {
+   if(level <= 0 || n <= 0)
+     {
+      RemoveTpLine();
+      return;
+     }
+   if(g_tpLineName == "")
+      g_tpLineName = "slipstream-alt-tp-" + IntegerToString(InpMagic);
+   if(ObjectFind(0, g_tpLineName) < 0)
+     {
+      ObjectCreate(0, g_tpLineName, OBJ_HLINE, 0, 0, level);
+      ObjectSetInteger(0, g_tpLineName, OBJPROP_STYLE, STYLE_DASH);
+      ObjectSetInteger(0, g_tpLineName, OBJPROP_WIDTH, 2);
+      ObjectSetInteger(0, g_tpLineName, OBJPROP_BACK, false);
+      ObjectSetInteger(0, g_tpLineName, OBJPROP_SELECTABLE, false);
+     }
+   ObjectSetDouble(0, g_tpLineName, OBJPROP_PRICE, level);
+   ObjectSetInteger(0, g_tpLineName, OBJPROP_COLOR,
+                    (dir == POSITION_TYPE_BUY) ? clrLime : clrRed);
+   ObjectSetString(0, g_tpLineName, OBJPROP_TEXT,
+                   ((dir == POSITION_TYPE_BUY) ? "BUY" : "SELL") +
+                   "-basket TP " + DoubleToString(level, g_dig));
+   ChartRedraw();
+  }
+
+void RemoveTpLine()
+  {
+   if(g_tpLineName != "" && ObjectFind(0, g_tpLineName) >= 0)
+      ObjectDelete(0, g_tpLineName);
+   ChartRedraw();
+  }
 
 //+------------------------------------------------------------------+
 int OnInit()
@@ -96,7 +136,7 @@ int OnInit()
    trade.SetDeviationInPoints(InpDeviationPts);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetExpertMagicNumber(InpMagic);
-   Print(g_tag, " ", InpMagic, " v1.01 started on ", _Symbol,
+   Print(g_tag, " ", InpMagic, " v1.02 started on ", _Symbol,
          " base=", InpLots, " mult=", InpLotMult,
          " step=", g_step, " tp=", g_tpd,
          " layers<=", (InpMaxLayers == 0 ? "unl" : IntegerToString(InpMaxLayers)),
@@ -107,6 +147,7 @@ int OnInit()
 void OnDeinit(const int reason)
   {
    Comment("");
+   RemoveTpLine();
   }
 
 //+------------------------------------------------------------------+
@@ -393,6 +434,7 @@ void OnTick()
      {
       g_lastBasketTP = 0.0;
       g_lastBasketN = 0;
+      RemoveTpLine();               // flat: no basket, no TP line
 
       // flat: new cycle on the OPPOSITE side of the last entry deal
       if(g_prevN > 0 || g_historyDirty)
@@ -416,6 +458,9 @@ void OnTick()
      {
       RunBasket(POSITION_TYPE_BUY, bid, false);
       RunBasket(POSITION_TYPE_SELL, ask, false);
+      // show the deeper basket's escape (the one nearest execution)
+      if(g_lastBasketN > 0)
+         DrawTpLine(g_lastBasketDir, g_lastBasketTP, g_lastBasketN);
       Comment(g_tag, " ", InpMagic, "  two-sided leftover, escape-only  L/S = ",
               nb, "/", ns);
       return;
@@ -428,9 +473,15 @@ void OnTick()
    // live basket escape level: show only the basket that is being managed
    string tpInfo = "";
    if(g_lastBasketDir == POSITION_TYPE_BUY && g_lastBasketN > 0)
+     {
       tpInfo = "  BUY-basket TP=" + DoubleToString(g_lastBasketTP, g_dig);
+      DrawTpLine(g_lastBasketDir, g_lastBasketTP, g_lastBasketN);
+     }
    else if(g_lastBasketDir == POSITION_TYPE_SELL && g_lastBasketN > 0)
+     {
       tpInfo = "  SELL-basket TP=" + DoubleToString(g_lastBasketTP, g_dig);
+      DrawTpLine(g_lastBasketDir, g_lastBasketTP, g_lastBasketN);
+     }
 
    Comment(g_tag, " ", InpMagic,
            "  L/S = ", nb, "/", ns,

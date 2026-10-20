@@ -161,3 +161,23 @@ continue with full context. Newest at the end. Keep me updated each working sess
     this EA since Fri 18:52 launch (+$486 lifetime-ish delta against Mon's +$374 snapshot).
 - NOT verified: the Comment() text ON SCREEN (needs one RDP eyeball after tiling/zooming).
   Everything else about v1.01 is verified live. SESSION_STATE.md updated accordingly.
+
+### 2026-10-20 Tue afternoon — user still couldn't SEE the TP -> v1.02 draws it as a chart line
+- User: "but still i cant see tp for slipstream alt EA". Root understanding: the EA attaches NO
+  server-side T/P by design (faithful to source bot), so the Positions tab T/P column is empty,
+  and the v1.01 Comment text is easy to miss. Fix: DISPLAY the escape level where the user
+  actually looks — on the chart.
+- SlipstreamAltEA v1.02: new DrawTpLine()/RemoveTpLine() — OBJ_HLINE at the live basket escape
+  level, refreshed every tick, lime for BUY baskets, red for SELL, dashed width-2, labelled
+  `BUY/SELL-basket TP <price>`, deleted when flat and on deinit. Trading logic untouched
+  (batch close at BE+$1.80 unchanged). Compile on VPS: 0 errors 0 warnings.
+- Gotcha hit and fixed: the earlier `copy` into the Terminal Experts dir never landed (source
+  still showed 1.01 / old timestamp) so the first two reloads printed v1.01. Explicit
+  Copy-Item + vercheck.ps1 (source version line + mq5/ex5 timestamps) now part of the loop.
+- The init Print ALSO said "v1.01" hardcoded (separate from #property) — bumped to v1.02.
+- Terminal restarted: PID 4040 transitional (13:14, still old ex5) -> PID 6616 at 13:19 loaded
+  v1.02 (log line `slipstream-alt 930031 v1.02 started ...` verified). 930031 positions
+  survived the restarts (probe: 3 open, floating +$0.72; today still 145 closed +$485.84 @ 74%).
+- Backup kept: C:\FTTest\SlipstreamAltEA.bak.mq5 (v1.01 source) before overwrite.
+- Still unverified visually: the line itself on screen (any RDP peek while a basket is live
+  shows it; green line above price for BUY basket, red below for SELL).

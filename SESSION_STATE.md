@@ -66,7 +66,7 @@ EQ	0	03:30:01.080	GridRecoveryEA (XAUUSD,H1)	gridrecovery equity-stop pause lift
 | chart01 | GridRecoveryEA | 930021 | v2.02: base 0.01, mult **1.5**, layers ≤ **4**, step $1.20, basket TP $1.80, catastrophic SL, news filter on | LIVE, trading today (571 log lines) |
 | chart02 | SlipstreamCloneEA | 930022 | v1.01: single-side BUY, base 0.01, step $3.50, TP $1.80, layers ≤ 12, no SL | LIVE, trading today (54 log lines) |
 | chart03 | GridBestRREA | 930023 | v1.01: AUTO EMA(H1,200), base 0.01, step $5.00, TP $1.80, layers ≤ 6, catSL $31 | LIVE, basket 4 layers deep (0.08 lots) at ~16:10 |
-| chart04 | **SlipstreamAltEA** | **930031** | **v1.01** (`SlipstreamAltEA.ex5` rebuilt 10/19 16:32, terminal PID 2328 loaded it): **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL. v1.01 adds live basket-TP display in the chart Comment (no server T/P — batch close at BE+$1.80, unchanged) | LIVE — Tue 10/20: 1 open, today 145 closed **+$485.84 @ 74% WR** (best day yet) |
+| chart04 | **SlipstreamAltEA** | **930031** | **v1.02** (Tue 10/20 13:19, PID 6616): **strict BUY→SELL alternation**, base 0.01, mult 2.0, **step $4.00**, TP $1.80, layers ≤ 12, **news pause ±30 min high-impact USD**, equity stop $5k, no SL. v1.01: basket TP in Comment. **v1.02: TP now drawn as a colored horizontal line ON CHART** (OBJ_HLINE, lime=BUY basket / red=SELL, label `BUY/SELL-basket TP <price>`, removed when flat, display only) | LIVE, 3 open (BUY basket, floating ≈ +$1), today 145 closed **+$485.84 @ 74% WR** |
 
 SlipstreamAltEA magic 930031 is NOT yet in `vps/perf_summary.py` — add it before Monday so
 its results land in the daily reports.
@@ -96,7 +96,7 @@ are structurally negative and the recommendation to retire 930021 stands.**
 - EA source of truth on VPS: `…\Terminal\D0E8209F77C8CF37AD8BF550E51FF075\MQL5\Experts\FTTest\`.
 
 ## What to check next (in order)
-1. **One RDP eyeball on chart04** remains the only unverified v1.01 item: after Tile Vertically (task MTTile) zoom in on the slipstream-alt tile and read the top-left `slipstream-alt 930031  L/S = x/y  BUY/SELL-basket TP=<price>` Comment. Log + Python probe prove the EA trades; only the Comment() rendering is unconfirmed.
+1. **One RDP eyeball on chart04** to see the NEW v1.02 TP line: a dashed horizontal line labelled `BUY-basket TP 4166.xx` (lime, or red for SELL baskets) at the live escape level. Log + Python probe prove the EA trades; the line drawing itself is unconfirmed on screen (needs ~1 min of RDP, any basket live).
 2. **Watch 930023**: escaped its 4-layer basket at 16:30 Mon for a gain, then reopened. Watch it rebuild.
 3. **Retire 930021** (biggest cumulative loss, −$1.7k). v2.02's tighter cap didn't turn it positive.
 4. **Add a per-basket dollar stop around −$150 on 930022** or accept the -1k tail risk profile as-is.

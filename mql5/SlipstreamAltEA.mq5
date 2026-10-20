@@ -27,7 +27,7 @@
 //|   * DEMO-ONLY unless InpAllowReal=true. Magic required.           |
 //+------------------------------------------------------------------+
 #property copyright "meta-trader-mcp forward test"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
 
 #include <Trade\Trade.mqh>
@@ -67,6 +67,8 @@ double   g_lastBasketTP = 0.0; // live basket escape level for the chart comment
 int      g_lastBasketN = 0;    // size of that basket (0 = none live)
 long     g_lastBasketDir = -1; // side of that basket
 string   g_tpLineName = "";    // chart TP line object (created while a basket is live)
+datetime g_lastSnap = 0;       // v1.03: last chart screenshot while a basket was live
+bool     g_snapArm = true;     // v1.03: armed -> save on the first tick a basket is live
 
 //+------------------------------------------------------------------+
 //| Draw/move the basket-TP line so the escape level is visible on    |
@@ -136,7 +138,7 @@ int OnInit()
    trade.SetDeviationInPoints(InpDeviationPts);
    trade.SetTypeFillingBySymbol(_Symbol);
    trade.SetExpertMagicNumber(InpMagic);
-   Print(g_tag, " ", InpMagic, " v1.02 started on ", _Symbol,
+   Print(g_tag, " ", InpMagic, " v1.03 started on ", _Symbol,
          " base=", InpLots, " mult=", InpLotMult,
          " step=", g_step, " tp=", g_tpd,
          " layers<=", (InpMaxLayers == 0 ? "unl" : IntegerToString(InpMaxLayers)),
@@ -435,6 +437,7 @@ void OnTick()
       g_lastBasketTP = 0.0;
       g_lastBasketN = 0;
       RemoveTpLine();               // flat: no basket, no TP line
+      g_snapArm = true;             // re-arm the snapshot for the next live basket
 
       // flat: new cycle on the OPPOSITE side of the last entry deal
       if(g_prevN > 0 || g_historyDirty)
@@ -481,6 +484,18 @@ void OnTick()
      {
       tpInfo = "  SELL-basket TP=" + DoubleToString(g_lastBasketTP, g_dig);
       DrawTpLine(g_lastBasketDir, g_lastBasketTP, g_lastBasketN);
+     }
+
+   // v1.03: self-capture. Saves a full-size PNG of this chart the moment a
+   // basket goes live and every 2 min after, so the TP line is provable
+   // without RDP. Written to MQL5\Files\slipstream_alt_live.png.
+   datetime nowT = TimeCurrent();
+   if(g_lastBasketN > 0 && (g_snapArm || nowT - g_lastSnap >= 120))
+     {
+      g_snapArm = false;
+      g_lastSnap = nowT;
+      if(!ChartScreenShot(0, "slipstream_alt_live.png", 1600, 900, ALIGN_RIGHT))
+         Print(g_tag, " screenshot failed, err=", GetLastError());
      }
 
    Comment(g_tag, " ", InpMagic,

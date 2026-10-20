@@ -181,3 +181,17 @@ continue with full context. Newest at the end. Keep me updated each working sess
 - Backup kept: C:\FTTest\SlipstreamAltEA.bak.mq5 (v1.01 source) before overwrite.
 - Still unverified visually: the line itself on screen (any RDP peek while a basket is live
   shows it; green line above price for BUY basket, red below for SELL).
+
+### 2026-10-20 Tue evening — full performance pull for all 4 EAs (user: "performance of each")
+- Read-only VPS pull: perf_summary.py + win_loss_breakdown.py + inline python for 930031's
+  split (NAMES table still lacks 930031 — fix pending) and since-UTC-midnight net per magic.
+- Account 26122844: balance $98,213.72, equity $98,200.70. Lifetime: 930021 1996 closed
+  −$1,732.27 @66% (avg +$8.14/−$18.26, BE needs 69.2%, largest loss −$333.44); 930022 757
+  closed −$71.14 @71.5% (avg +$10.91/−$27.65, BE needs 71.7%, largest loss −$1,016.32 — nearly
+  breakeven lifetime after today's +$747.68 on 76 closes, likely a deep-basket escape);
+  930023 334 closed −$988.65 @71% (avg +$5.34/−$23.24, BE needs 81.3% — structurally worst
+  payoff ratio); 930031 215 closed +$761.63 @67.9% (avg +$18.50/−$28.10, BE needs 60.3% —
+  only strategy above break-even win rate, largest loss −$252.80).
+- Today (UTC midnight): 930021 +$33.37 (214 closes), 930022 +$747.68 (76), 930023 +$68.68
+  (26), 930031 +$226.61 (62) — all four green, +$1,076.34 combined.
+- Open now: 930021 2 (−$2.51), 930022 2 (−$0.08), 930023 2 (−$9.25), 930031 2 (−$1.18).

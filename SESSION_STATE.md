@@ -4,31 +4,38 @@ _Last updated: 2026-10-20 (Tuesday) by the working agent._
 
 <!-- EVENING_SNAPSHOT:BEGIN (auto-updated daily 20:00 by scripts/evening_snapshot.py) -->
 
-### Evening snapshot — auto-generated 2026-10-20 18:30
+### Evening snapshot — auto-generated 2026-10-23 18:30
 
 **Source:** live pull from the VPS by `scripts/evening_snapshot.py` (perf_summary.py + today's EA log).
 
 ```text
-ACCOUNT 26122844 balance=98183.63 equity=98174.40
+ACCOUNT 26122844 balance=96253.10 equity=96243.58
 GridRecovery (930021)
-  open trades=3  floating=-1.57
-  closed trades=1996  net=-1732.27  win rate=66%
+  open trades=2  floating=-0.07
+  closed trades=3028  net=-1710.16  win rate=68%
 Bare BUY grid (930022)
-  open trades=4  floating=-3.17
-  closed trades=752  net=-100.51  win rate=72%
+  open trades=2  floating=-5.76
+  closed trades=1149  net=-2307.61  win rate=70%
 GridBestRR v1.01 (930023)
-  open trades=2  floating=-4.51
-  closed trades=334  net=-988.65  win rate=71%
+  open trades=1  floating=-3.13
+  closed trades=444  net=-749.74  win rate=73%
 SlipstreamAlt (930031)
-  open trades=1  floating=+0.02
-  closed trades=213  net=+758.40  win rate=68%
+  open trades=1  floating=-0.56
+  closed trades=556  net=+834.18  win rate=69%
 ```
 
 ```text
 5872 10/20/2026 3:17:07 PM
+
+
+ES	0	03:30:06.754	SlipstreamAltEA (XAUUSD,H1)	slipstream-alt equity-stop pause lifted
+EH	0	03:30:06.765	SlipstreamCloneEA (XAUUSD,H1)	slipstream-clone equity-stop pause lifted
+LO	0	03:30:06.765	GridBestRREA (XAUUSD,H1)	gridbestrr equity-stop pause lifted
+MQ	0	03:30:06.766	GridRecoveryEA (XAUUSD,H1)	gridrecovery equity-stop pause lifted
 ```
 
 <!-- EVENING_SNAPSHOT:END -->
+
 
 
 
